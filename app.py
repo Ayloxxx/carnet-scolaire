@@ -347,7 +347,7 @@ def connexion():
             return redirect('/')
         else:
             return render_template('connexion.html', erreur="Identifiants incorrects")
-    return render_template('connexions.html')
+    return render_template('connexion.html')
 
 @app.route('/deconnexion')
 def deconnexion():
