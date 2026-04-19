@@ -331,7 +331,7 @@ def inscriptions():
         password = request.form['password']
         user = add_user(username, password)
         return redirect('/connexion')
-    return render_template('inscription.html')
+    return render_template('inscriptions.html')
 
 @app.route('/connexion',methods=['GET', 'POST'])
 def connexion():
