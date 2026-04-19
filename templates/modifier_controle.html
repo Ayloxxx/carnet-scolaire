@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>Modifier le contrôle</h1>
+
+<form method="post">
+    <label>Matière :</label>
+    <select name="matiere_id">
+        {% for matiere in les_matieres %}
+            <option value="{{ matiere[0] }}" {% if matiere[0] == controle[1] %}selected{% endif %}>{{ matiere[1] }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Titre :</label>
+    <input type="text" name="titre" value="{{ controle[2] }}"><br><br>
+
+    <label>Note :</label>
+    <input type="text" name="note" value="{{ controle[3] if controle[3] else '' }}" placeholder="Ex: 15/20"><br><br>
+
+    <label>Date :</label>
+    <input type="date" name="date" value="{{ controle[4] }}"><br><br>
+
+    <button type="submit">Sauvegarder</button>
+    <a href="/controles">Annuler</a>
+</form>
+
+{% endblock %}

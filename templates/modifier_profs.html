@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>✏️ Modifier le professeur</h1>
+
+<form method="post">
+    <label>Matière :</label>
+    <select name="matiere_id">
+        {% for matiere in les_matieres %}
+            <option value="{{ matiere[0] }}" {% if matiere[0] == prof[2] %}selected{% endif %}>{{ matiere[1] }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Nom du professeur :</label>
+    <input type="text" name="prof" value="{{ prof[1] }}"><br><br>
+
+    <button type="submit">Sauvegarder</button>
+    <a href="/profs" class="annuler-link">Annuler</a>
+</form>
+
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>Mes Cours</h1>
+<p>📅 <strong>Semaine {{ semaine_actuelle }}</strong></p>
+
+<!-- Navigation entre semaines -->
+<div>
+    <button onclick="afficherSemaine('A')">◀ Semaine A</button>
+    <button onclick="afficherSemaine('B')">Semaine B ▶</button>
+</div>
+
+
+<!-- Macro pour trouver la couleur d'une matière -->
+{% macro couleur_matiere(matiere_id) %}
+    {% for matiere in les_matieres %}
+        {% if matiere[0] == matiere_id %}
+            {{ matiere[2] if matiere[2] else '#ffffff' }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+{% macro nom_matiere(matiere_id) %}
+    {% for matiere in les_matieres %}
+        {% if matiere[0] == matiere_id %}
+            {{ matiere[1] }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+<!-- Emploi du temps Semaine A -->
+<div id="semaine-A">
+    <h2>Emploi du temps - Semaine A {% if semaine_actuelle == 'A' %}⬅️ Semaine actuelle{% endif %}</h2>
+    <table border="1">
+        <tr>
+            <th>Heure</th>
+            <th>Lundi</th>
+            <th>Mardi</th>
+            <th>Mercredi</th>
+            <th>Jeudi</th>
+            <th>Vendredi</th>
+        </tr>
+        {% for heure in ['8h00-8h55', '8h55-9h50', '10h10-11h05', '11h05-12h00', '12h55-13h50', '13h50-14h45', '15h05-16h00', '16h00-16h55'] %}
+        <tr>
+            <td>{{ heure }}</td>
+            {% for jour in ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'] %}
+            <td>
+                {% for cours in les_cours %}
+                    {% if cours[5] == jour and cours[7] == heure and cours[6] == 'A' %}
+                        {% set couleur = couleur_matiere(cours[1]) %}
+                        <div style="background: {{ couleur }}; opacity: 0.7; padding: 5px; border-radius: 5px;">
+                            <strong>{{ nom_matiere(cours[1]) }}</strong><br>
+                            🧑‍🏫 {{ cours[8] }}<br>
+                            📍 {{ cours[9] }}<br>
+                            <a href="/cours/modifier/{{ cours[0] }}">✏️</a>
+                            <a href="/cours/supprimer/{{ cours[0] }}" onclick="return confirm('Supprimer ce cours ?')">🗑️</a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- Emploi du temps Semaine B -->
+<div id="semaine-B" style="display:none">
+    <h2>Emploi du temps - Semaine B {% if semaine_actuelle == 'B' %}⬅️ Semaine actuelle{% endif %}</h2>
+    <table border="1">
+        <tr>
+            <th>Heure</th>
+            <th>Lundi</th>
+            <th>Mardi</th>
+            <th>Mercredi</th>
+            <th>Jeudi</th>
+            <th>Vendredi</th>
+        </tr>
+        {% for heure in ['8h00-8h55', '8h55-9h50', '10h10-11h05', '11h05-12h00', '12h55-13h50', '13h50-14h45', '15h05-16h00', '16h00-16h55'] %}
+        <tr>
+            <td>{{ heure }}</td>
+            {% for jour in ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'] %}
+            <td>
+                {% for cours in les_cours %}
+                    {% if cours[5] == jour and cours[7] == heure and cours[6] == 'B' %}
+                        {% set couleur = couleur_matiere(cours[1]) %}
+                        <div style="background: {{ couleur }}; opacity: 0.7; padding: 5px; border-radius: 5px;">
+                            <strong>{{ nom_matiere(cours[1]) }}</strong><br>
+                            🧑‍🏫 {{ cours[8] }}<br>
+                            📍 {{ cours[9] }}<br>
+                            <a href="/cours/modifier/{{ cours[0] }}">✏️</a>
+                            <a href="/cours/supprimer/{{ cours[0] }}" onclick="return confirm('Supprimer ce cours ?')">🗑️</a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<hr>
+
+<!-- Formulaire pour ajouter un cours -->
+<h2>Ajouter un cours</h2>
+<form method="post">
+    <input type="hidden" name="titre">
+    <label>Matière :</label>
+    <select name="matiere_id">
+        {% for matiere in les_matieres %}
+            <option value="{{ matiere[0] }}">{{ matiere[1] }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Contenu :</label>
+    <input type="text" name="contenu" placeholder="Ce qu'on a fait en cours"><br><br>
+
+    <label>Devoirs :</label>
+    <input type="text" name="devoirs" placeholder="Ex: Exercice 3 page 42"><br><br>
+
+    <select name="prof">
+        {% for prof in les_prof %}
+            <option value="{{ prof[1] }}">{{ prof[1] }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Salle :</label>
+    <input type="text" name="salle" placeholder="Ex: B12"><br><br>
+
+    <label>Jour :</label>
+    <select name="jours">
+        <option value="lundi">Lundi</option>
+        <option value="mardi">Mardi</option>
+        <option value="mercredi">Mercredi</option>
+        <option value="jeudi">Jeudi</option>
+        <option value="vendredi">Vendredi</option>
+    </select><br><br>
+
+    <label>Semaine :</label>
+    <select name="semaine">
+        <option value="A">Semaine A</option>
+        <option value="B">Semaine B</option>
+    </select><br><br>
+
+    <label>Heure :</label>
+    <select name="heure">
+        <option value="8h00-8h55">8h00 - 8h55</option>
+        <option value="8h55-9h50">8h55 - 9h50</option>
+        <option value="10h10-11h05">10h10 - 11h05</option>
+        <option value="11h05-12h00">11h05 - 12h00</option>
+        <option value="12h55-13h50">12h55 - 13h50</option>
+        <option value="13h50-14h45">13h50 - 14h45</option>
+        <option value="15h05-16h00">15h05 - 16h00</option>
+        <option value="16h00-16h55">16h00 - 16h55</option>
+    </select><br><br>
+
+    <button type="submit">Ajouter</button>
+</form>
+
+<hr>
+<script>
+    afficherSemaine('{{ semaine_actuelle }}');
+
+    function afficherSemaine(semaine) {
+        document.getElementById('semaine-A').style.display = 'none';
+        document.getElementById('semaine-B').style.display = 'none';
+        document.getElementById('semaine-' + semaine).style.display = 'block';
+    }
+</script>
+
+{% endblock %}

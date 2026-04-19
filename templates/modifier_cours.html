@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un cours</title>
+</head>
+<body>
+
+<h1>Modifier le cours</h1>
+
+<form method="post">
+    <label>Matière :</label>
+<select name="matiere_id">
+    {% for matiere in les_matieres %}
+        <option value="{{ matiere[0] }}">{{ matiere[1] }}</option>
+    {% endfor %}
+</select>
+<br>
+<br>
+    <input type="hidden" name="titre" value="{{ cours[2] }}">
+    <label>Contenu :</label>
+    <input type="text" name="contenu" value="{{ cours[3] }}"><br><br>
+
+    <label>Devoirs :</label>
+    <input type="text" name="devoirs" value="{{ cours[4] }}"><br><br>
+
+    <label>Jour :</label>
+    <select name="jours">
+        {% for jour in ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'] %}
+        <option value="{{ jour }}" {% if cours[5] == jour %}selected{% endif %}>{{ jour|capitalize }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Semaine :</label>
+    <select name="semaine">
+        <option value="A" {% if cours[6] == 'A' %}selected{% endif %}>Semaine A</option>
+        <option value="B" {% if cours[6] == 'B' %}selected{% endif %}>Semaine B</option>
+    </select><br><br>
+
+    <label>Heure :</label>
+    <select name="heure">
+        {% for h in ['8h00-8h55', '8h55-9h50', '10h10-11h05', '11h05-12h00', '12h55-13h50', '13h50-14h45', '15h05-16h00', '16h00-16h55'] %}
+        <option value="{{ h }}" {% if cours[7] == h %}selected{% endif %}>{{ h }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Professeur :</label>
+    <input type="text" name="prof" value="{{ cours[8] }}"><br><br>
+
+    <label>Salle :</label>
+    <input type="text" name="salle" value="{{ cours[9] }}"><br><br>
+
+    <button type="submit">Sauvegarder</button>
+    <a href="/cours">Annuler</a>
+</form>
+
+</body>
+</html>

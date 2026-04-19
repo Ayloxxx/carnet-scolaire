@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>Mes Matières</h1>
+
+<!-- Formulaire pour ajouter une matière -->
+<h2>Ajouter une matière</h2>
+<form method="post">
+    <label>Nom :</label>
+    <input type="text" name="nom" placeholder="Ex: Maths"><br><br>
+
+    <label>Couleur :</label><br>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px;">
+        {% for couleur, nom_couleur in [
+            ('#4A90D9', 'Bleu'), ('#81D4FA', 'Bleu ciel'),
+            ('#2E7D32', 'Vert foncé'), ('#5BA85A', 'Vert'), ('#A5D6A7', 'Vert clair'),
+            ('#D94A4A', 'Rouge'), ('#D9B44A', 'Jaune'),
+            ('#9B4AD9', 'Violet'), ('#D97A4A', 'Orange'),
+            ('#D94A90', 'Rose'), ('#F8BBD0', 'Rose pâle'),
+            ('#F5F5F5', 'Gris clair')
+        ] %}
+        <label style="cursor: pointer; text-align: center;">
+            <input type="radio" name="couleur" value="{{ couleur }}" style="display: none;">
+            <div style="width: 35px; height: 35px; border-radius: 50%; background: {{ couleur }}; border: 3px solid transparent;"
+                onclick="selectCouleur(this)">
+            </div>
+            <small>{{ nom_couleur }}</small>
+        </label>
+        {% endfor %}
+    </div><br>
+
+    <button type="submit">Ajouter</button>
+</form>
+
+<hr>
+
+<!-- Liste des matières -->
+<h2>Mes matières</h2>
+{% for matiere in les_matieres %}
+<div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+    <div style="width: 25px; height: 25px; border-radius: 50%; background: {{ matiere[2] if matiere[2] else '#ccc' }};"></div>
+    <strong>{{ matiere[1] }}</strong>
+    <a href="/matieres/modifier/{{ matiere[0] }}">✏️ Modifier</a>
+    <a href="/matieres/supprimer/{{ matiere[0] }}" onclick="return confirm('Supprimer cette matière ?')">🗑️ Supprimer</a>
+</div>
+{% endfor %}
+
+<script>
+function selectCouleur(el) {
+    document.querySelectorAll('[name="couleur"]').forEach((r) => {
+        r.closest('label').querySelector('div').style.border = '3px solid transparent';
+    });
+    el.style.border = '3px solid black';
+    el.previousElementSibling.checked = true;
+}
+</script>
+
+{% endblock %}

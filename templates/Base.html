@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Carnet Scolaire</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Menu hamburger -->
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+<div class="menu" id="menu">
+
+    <!-- Mini profil dans le menu -->
+    <div style="display: flex; align-items: center; gap: 10px; padding: 10px 15px; border-bottom: 1px solid var(--border); margin-bottom: 5px;">
+        <div id="menu-pdp" style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; overflow: hidden; flex-shrink: 0;">
+            <span id="menu-pdp-emoji">🎓</span>
+            <img id="menu-pdp-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+        </div>
+        <span id="menu-nom" style="font-weight: 700; color: var(--text);">Mon Carnet</span>
+    </div>
+
+    <a href="/">🏠 Accueil</a>
+    <a href="/matieres">📖 Mes Matières</a>
+    <a href="/cours">🗓️ Emploi du temps</a>
+    <a href="/controles">📊 Mes Contrôles</a>
+    <a href="/devoirs">📚Mes devoir</a>
+    <a href="/commentaires">💬commentaires</a>
+    <a href="/profs">👨‍🏫profs</a>
+    <a href="/profil">👤 Mon Profil</a>
+    <hr style="margin: 6px 0; border-color: var(--border);">
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙 Mode sombre</button>
+    <a href="/deconnexion">🚪 Se déconnecter</a>
+</div>
+
+{% block content %}{% endblock %}
+
+<script>
+    // Appliquer les préférences au chargement
+    (function() {
+        var theme = localStorage.getItem('theme') || 'light';
+        var couleur = localStorage.getItem('couleurTheme');
+        document.documentElement.setAttribute('data-theme', theme);
+        if (couleur) {
+            document.documentElement.style.setProperty('--primary', couleur);
+        }
+    })();
+
+    window.onload = function() {
+        // Thème
+        var theme = localStorage.getItem('theme') || 'light';
+        var btn = document.getElementById('theme-btn');
+        if (btn) btn.textContent = theme === 'dark' ? '☀️ Mode clair' : '🌙 Mode sombre';
+
+        // Profil dans le menu
+        var prenom = localStorage.getItem('prenom') || '';
+        var nom = localStorage.getItem('nom') || '';
+        var nomComplet = (prenom + ' ' + nom).trim();
+        if (nomComplet) document.getElementById('menu-nom').textContent = nomComplet;
+
+        var pdp = localStorage.getItem('pdp');
+        if (pdp) {
+            document.getElementById('menu-pdp-emoji').style.display = 'none';
+            document.getElementById('menu-pdp-img').style.display = 'block';
+            document.getElementById('menu-pdp-img').src = pdp;
+        }
+    };
+
+    function toggleMenu() {
+        var menu = document.getElementById('menu');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('click', function(e) {
+        var menu = document.getElementById('menu');
+        var btn = document.querySelector('.menu-btn');
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.style.display = 'none';
+        }
+    });
+
+    function toggleTheme() {
+        var html = document.documentElement;
+        var isDark = html.getAttribute('data-theme') === 'dark';
+        var newTheme = isDark ? 'light' : 'dark';
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        document.getElementById('theme-btn').textContent = isDark ? '🌙 Mode sombre' : '☀️ Mode clair';
+    }
+</script>
+
+</body>
+</html>

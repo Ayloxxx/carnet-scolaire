@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Profil -->
+<div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+    <div id="accueil-pdp" style="width: 60px; height: 60px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; overflow: hidden; flex-shrink: 0; border: 3px solid var(--border);">
+        <span id="accueil-pdp-emoji">🎓</span>
+        <img id="accueil-pdp-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+    </div>
+    <div>
+        <h1 style="margin-bottom: 2px; border: none; padding: 0;" id="accueil-titre">Mon Carnet Scolaire</h1>
+        <p style="color: var(--text-light); margin: 0;">📅 Semaine <strong>{{ semaine_actuelle }}</strong></p>
+    </div>
+</div>
+
+<hr>
+
+<div class="accueil-grid">
+
+    <!-- Devoirs de demain -->
+    <div class="card">
+        <div class="card-header" style="background: var(--primary); color: white;">
+            📚 Devoirs — {{ next_day_date }}
+        </div>
+        <div class="card-body">
+            {% set found = [] %}
+            {% for cours in les_cours %}
+                {% if cours[5] == nextday and cours[6] == semaine_actuelle and cours[4] %}
+                    <div class="cours-item">
+                        <span>📖 {{ cours[4] }}</span>
+                    </div>
+                    {% set _ = found.append(1) %}
+                {% endif %}
+            {% endfor %}
+            {% if not found %}
+                <p style="color: var(--text-light);">✅ Aucun devoir pour {{ next_day_date }} !</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Emploi du temps de demain -->
+    <div class="card">
+        <div class="card-header" style="background: var(--primary); color: white;">
+            🗓️ Cours — {{ next_day_date }}
+        </div>
+        <div class="card-body">
+            {% set found2 = [] %}
+            {% for heure in ['8h00-8h55', '8h55-9h50', '10h10-11h05', '11h05-12h00', '12h55-13h50', '13h50-14h45', '15h05-16h00', '16h00-16h55'] %}
+                {% for cours in les_cours %}
+                    {% if cours[5] == nextday and cours[7] == heure and cours[6] == semaine_actuelle %}
+                        <div class="cours-item">
+                            <span class="cours-heure">🕐 {{ heure }}</span>
+                            <span>
+                                {% for matiere in les_matieres %}
+                                    {% if matiere[0] == cours[1] %}
+                                        <strong style="color: {{ matiere[2] if matiere[2] else 'var(--primary)' }}">{{ matiere[1] }}</strong>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if cours[8] %} · 🧑‍🏫 {{ cours[8] }}{% endif %}
+                                {% if cours[9] %} · 📍 {{ cours[9] }}{% endif %}
+                            </span>
+                        </div>
+                        {% set _ = found2.append(1) %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            {% if not found2 %}
+                <p style="color: var(--text-light);">😎 Pas de cours {{ next_day_date }} !</p>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+<!-- Dernières notes -->
+<div class="card" style="margin-top: 10px;">
+    <div class="card-header" style="background: var(--primary); color: white;">
+        📊 Dernières notes
+    </div>
+    <div class="card-body">
+        {% set count = [0] %}
+        {% for controle in les_controles|reverse %}
+            {% if count[0] < 5 %}
+                <div class="cours-item">
+                    <span style="flex: 1;"><strong>{{ controle[2] }}</strong> · <small>{{ controle[4] }}</small></span>
+                    <span class="{% if controle[3] %}{% set note = controle[3].split('/')[0] | float %}{% if note >= 14 %}note-bonne{% elif note >= 10 %}note-moyenne{% else %}note-mauvaise{% endif %}{% else %}note-vide{% endif %}">
+                        {{ controle[3] if controle[3] else '—' }}
+                    </span>
+                </div>
+                {% set _ = count.append(count.pop() + 1) %}
+            {% endif %}
+        {% endfor %}
+        {% if not les_controles %}
+            <p style="color: var(--text-light);">Aucune note pour l'instant.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+window.onload = function() {
+    var prenom = localStorage.getItem('prenom') || '';
+    var nom = localStorage.getItem('nom') || '';
+    var nomComplet = (prenom + ' ' + nom).trim();
+    if (nomComplet) {
+        document.getElementById('accueil-titre').textContent = 'Bonjour, ' + prenom + ' 👋';
+    }
+
+    var pdp = localStorage.getItem('pdp');
+    if (pdp) {
+        document.getElementById('accueil-pdp-emoji').style.display = 'none';
+        document.getElementById('accueil-pdp-img').style.display = 'block';
+        document.getElementById('accueil-pdp-img').src = pdp;
+    }
+
+    var couleur = localStorage.getItem('couleurTheme');
+    if (couleur) {
+        document.documentElement.style.setProperty('--primary', couleur);
+    }
+}
+</script>
+
+{% endblock %}

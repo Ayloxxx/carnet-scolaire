@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>👨‍🏫 Mes Professeurs</h1>
+
+<!-- Formulaire pour ajouter un prof -->
+<h2>Ajouter un professeur</h2>
+<form method="post">
+    <label>Matière :</label>
+    <select name="matiere_id">
+        {% for matiere in les_matieres %}
+            <option value="{{ matiere[0] }}">{{ matiere[1] }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Nom du professeur :</label>
+    <input type="text" name="prof" placeholder="Ex: M. Dupont"><br><br>
+
+    <button type="submit">Ajouter</button>
+</form>
+
+<hr>
+
+<!-- Liste des profs groupés par matière -->
+<h2>Liste des professeurs</h2>
+
+{% for matiere in les_matieres %}
+    {% set profs_matiere = les_prof | selectattr('2', 'equalto', matiere[0]) | list %}
+    {% if profs_matiere %}
+    <div style="margin-bottom: 20px; border-radius: 8px; overflow: hidden; border: 2px solid var(--border); box-shadow: 0 4px 16px var(--shadow);">
+
+        <!-- En-tête matière -->
+        <div style="background: {{ matiere[2] if matiere[2] else 'var(--primary)' }}; padding: 10px 15px;">
+            <strong style="font-size: 1.05rem;">{{ matiere[1] }}</strong>
+        </div>
+
+        {% for prof in profs_matiere %}
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; border-top: 1px solid var(--border); background: var(--surface);">
+            <span style="font-weight: 600;">🧑‍🏫 {{ prof[1] }}</span>
+            <div style="display: flex; gap: 10px;">
+                <a href="/profs/modifier/{{ prof[0] }}">✏️</a>
+                <a href="/profs/supprimer/{{ prof[0] }}" onclick="return confirm('Supprimer ce professeur ?')">🗑️</a>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+{% endfor %}
+
+{% if not les_prof %}
+    <p style="color: var(--text-light);">Aucun professeur ajouté pour l'instant.</p>
+{% endif %}
+
+{% endblock %}

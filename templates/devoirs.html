@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>📚 Mes Devoirs</h1>
+
+<!-- Formulaire pour ajouter un devoir -->
+<h2>Ajouter un devoir</h2>
+<form method="post">
+    <label>Matière :</label>
+    <select name="matiere_id">
+        {% for matiere in les_matieres %}
+            <option value="{{ matiere[0] }}">{{ matiere[1] }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Titre :</label>
+    <input type="text" name="titre" placeholder="Ex: Exercice 5 page 42"><br><br>
+
+    <label>Contenu / Description :</label>
+    <input type="text" name="contenu" placeholder="Ex: Faire les questions 1 à 5"><br><br>
+
+    <label>Date limite :</label>
+    <input type="date" name="date"><br><br>
+
+    <label>Heure :</label>
+    <select name="heure">
+        <option value="">-- Pas d'heure précise --</option>
+        <option value="8h00-8h55">8h00 - 8h55</option>
+        <option value="8h55-9h50">8h55 - 9h50</option>
+        <option value="10h10-11h05">10h10 - 11h05</option>
+        <option value="11h05-12h00">11h05 - 12h00</option>
+        <option value="12h55-13h50">12h55 - 13h50</option>
+        <option value="13h50-14h45">13h50 - 14h45</option>
+        <option value="15h05-16h00">15h05 - 16h00</option>
+        <option value="16h00-16h55">16h00 - 16h55</option>
+    </select><br><br>
+
+    <label>Semaine :</label>
+    <select name="semaine">
+        <option value="A">Semaine A</option>
+        <option value="B">Semaine B</option>
+        <option value="">-- Peu importe --</option>
+    </select><br><br>
+
+    <button type="submit">Ajouter</button>
+</form>
+
+<hr>
+
+<!-- Liste des devoirs groupés par matière -->
+<h2>Mes devoirs</h2>
+
+{% for matiere in les_matieres %}
+    {% set devoirs_matiere = les_devoirs | selectattr('1', 'equalto', matiere[0]) | list %}
+    {% if devoirs_matiere %}
+    <div style="margin-bottom: 20px; border-radius: 8px; overflow: hidden; border: 2px solid var(--border); box-shadow: 0 4px 16px var(--shadow);">
+
+        <!-- En-tête matière -->
+        <div style="background: {{ matiere[2] if matiere[2] else 'var(--primary)' }}; padding: 10px 15px;">
+            <strong style="font-size: 1.05rem;">{{ matiere[1] }}</strong>
+        </div>
+
+        {% for devoir in devoirs_matiere %}
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; border-top: 1px solid var(--border); background: var(--surface);">
+            <div>
+                <strong>{{ devoir[2] }}</strong><br>
+                {% if devoir[3] %}<small style="color: var(--text-light);">📝 {{ devoir[3] }}</small><br>{% endif %}
+                <small style="color: var(--text-light);">
+                    📅 {{ devoir[4] }}
+                    {% if devoir[5] %} · ⏰ {{ devoir[5] }}{% endif %}
+                    {% if devoir[6] %} · 📆 Sem. {{ devoir[6] }}{% endif %}
+                </small>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <a href="/devoirs/modifier/{{ devoir[0] }}">✏️</a>
+                <a href="/devoirs/supprimer/{{ devoir[0] }}" onclick="return confirm('Supprimer ce devoir ?')">🗑️</a>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+{% endfor %}
+
+{% if not les_devoirs %}
+    <p style="color: var(--text-light);">✅ Aucun devoir pour l'instant !</p>
+{% endif %}
+
+{% endblock %}

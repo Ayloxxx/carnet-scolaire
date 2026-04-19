@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>📊 Mes Contrôles</h1>
+
+<!-- Formulaire pour ajouter un contrôle -->
+<h2>Ajouter un contrôle</h2>
+<form method="post">
+    <label>Matière :</label>
+    <select name="matiere_id">
+        {% for matiere in les_matieres %}
+            <option value="{{ matiere[0] }}">{{ matiere[1] }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Titre :</label>
+    <input type="text" name="titre" placeholder="Ex: Contrôle de maths"><br><br>
+
+    <label>Date :</label>
+    <input type="date" name="date"><br><br>
+
+    <button type="submit">Ajouter</button>
+</form>
+
+<hr>
+
+<h2>Mes notes</h2>
+
+{% for matiere in les_matieres %}
+<div style="margin-bottom: 20px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd;">
+
+    <!-- En-tête de la matière -->
+    <div style="background: {{ matiere[2] if matiere[2] else '#4A90D9' }}; padding: 10px 15px;">
+        <strong style="font-size: 16px;">{{ matiere[1] }}</strong>
+    </div>
+
+    <!-- Liste des contrôles de cette matière -->
+    {% set controles_matiere = les_controles | selectattr('1', 'equalto', matiere[0]) | list %}
+    {% if controles_matiere %}
+        {% for controle in controles_matiere %}
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; border-top: 1px solid #eee; color: var(--text-light)">
+            <div>
+                <strong>{{ controle[2] }}</strong><br>
+                <small>📅 {{ controle[4] }}</small>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 20px; font-weight: bold; color: grey;">
+                    {{ controle[3] if controle[3] else '—' }}
+                </span>
+                <a href="/controles/modifier/{{ controle[0] }}">✏️</a>
+                <a href="/controles/supprimer/{{ controle[0] }}" onclick="return confirm('Supprimer ce contrôle ?')">🗑️</a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div style="padding: 10px 15px; color: var(--text-light);">
+            <em>Aucun contrôle pour l'instant</em>
+        </div>
+    {% endif %}
+
+</div>
+{% endfor %}
+
+{% endblock %}

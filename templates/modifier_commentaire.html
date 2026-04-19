@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>✏️ Modifier le commentaire</h1>
+
+<form method="post">
+    <label>Matière :</label>
+    <select name="matiere_id">
+        {% for matiere in les_matieres %}
+            <option value="{{ matiere[0] }}" {% if matiere[0] == commentaire[1] %}selected{% endif %}>{{ matiere[1] }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Professeur :</label>
+    <input type="text" name="prof" value="{{ commentaire[2] }}"><br><br>
+
+    <label>Commentaire :</label>
+    <input type="text" name="commentaire" value="{{ commentaire[3] }}"><br><br>
+
+    <label>Période :</label>
+    <select name="periode">
+        {% for p in ['Trimestre 1', 'Trimestre 2', 'Trimestre 3'] %}
+        <option value="{{ p }}" {% if commentaire[4] == p %}selected{% endif %}>{{ p }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Date :</label>
+    <input type="date" name="date" value="{{ commentaire[5] }}"><br><br>
+
+    <button type="submit">Sauvegarder</button>
+    <a href="/commentaires" class="annuler-link">Annuler</a>
+</form>
+
+{% endblock %}

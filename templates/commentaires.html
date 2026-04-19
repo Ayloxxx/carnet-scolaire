@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>💬 Commentaires des Professeurs</h1>
+
+<!-- Commentaires groupés par matière -->
+<h2>Mes commentaires</h2>
+
+{% for matiere in les_matieres %}
+    {% set comms_matiere = les_commentaire | selectattr('1', 'equalto', matiere[0]) | list %}
+    {% if comms_matiere %}
+    <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; border: 2px solid var(--border); box-shadow: 0 4px 16px var(--shadow);">
+
+        <!-- En-tête matière -->
+        <div style="background: {{ matiere[2] if matiere[2] else 'var(--primary)' }}; padding: 10px 15px;">
+            <strong style="font-size: 1.05rem;">{{ matiere[1] }}</strong>
+        </div>
+
+        <!-- Grouper par période -->
+        {% for periode in ['Trimestre 1', 'Trimestre 2', 'Trimestre 3'] %}
+            {% set comms_periode = comms_matiere | selectattr('4', 'equalto', periode) | list %}
+            {% if comms_periode %}
+            <div style="background: var(--table-alt); padding: 8px 15px; border-top: 1px solid var(--border);">
+                <strong style="color: var(--primary); font-size: 0.9rem;">📆 {{ periode }}</strong>
+            </div>
+            {% for comm in comms_periode %}
+            <div style="padding: 12px 15px; border-top: 1px solid var(--border); background: var(--surface);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                            <span style="font-weight: 700; color: var(--primary);">🧑‍🏫 {{ comm[2] }}</span>
+                            <small style="color: var(--text-light);">{{ comm[5] }}</small>
+                        </div>
+                        <p style="margin: 0; color: var(--text); font-style: italic;">"{{ comm[3] }}"</p>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-left: 15px;">
+                        <a href="/commentaires/modifier/{{ comm[0] }}">✏️</a>
+                        <a href="/commentaires/supprimer/{{ comm[0] }}" onclick="return confirm('Supprimer ce commentaire ?')">🗑️</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+    </div>
+    {% endif %}
+{% endfor %}
+
+{% if not les_commentaire %}
+    <p style="color: var(--text-light);">Aucun commentaire pour l'instant.</p>
+{% endif %}
+
+
+<h2>Ajouter un commentaire</h2>
+<form method="post">
+    <label>Matière :</label>
+    <select name="matiere_id">
+        {% for matiere in les_matieres %}
+            <option value="{{ matiere[0] }}">{{ matiere[1] }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Professeur :</label>
+    <input type="text" name="prof" placeholder="Ex: M. Dupont"><br><br>
+
+    <label>Commentaire :</label>
+    <input type="text" name="commentaire" placeholder="Ex: Bon trimestre, continue ainsi !"><br><br>
+
+    <label>Période :</label>
+    <select name="periode">
+        <option value="Trimestre 1">Trimestre 1</option>
+        <option value="Trimestre 2">Trimestre 2</option>
+        <option value="Trimestre 3">Trimestre 3</option>
+    </select><br><br>
+
+    <label>Date :</label>
+    <input type="date" name="date"><br><br>
+
+    <button type="submit">Ajouter</button>
+</form>
+
+<hr>
+
+{% endblock %}

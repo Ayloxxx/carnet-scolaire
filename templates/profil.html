@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h1>👤 Mon Profil</h1>
+
+<div class="card" style="max-width: 500px; padding: 25px;">
+
+    <!-- Photo de profil -->
+    <div style="text-align: center; margin-bottom: 25px;">
+        <div id="pdp-preview" style="width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 10px; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; overflow: hidden; border: 3px solid var(--border);">
+            <span id="pdp-emoji">🎓</span>
+            <img id="pdp-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+        </div>
+        <label style="cursor: pointer; color: var(--primary-light); font-weight: 600;">
+            📷 Changer la photo
+            <input type="file" id="pdp-input" accept="image/*" style="display:none;" onchange="changerPdp(this)">
+        </label>
+    </div>
+
+    <!-- Nom -->
+    <label>Prénom :</label>
+    <input type="text" id="prenom" placeholder="Ex: Lucas" oninput="sauvegarder()"><br>
+
+    <label>Nom :</label>
+    <input type="text" id="nom" placeholder="Ex: Martin" oninput="sauvegarder()"><br>
+
+    <hr style="margin: 20px 0;">
+
+    <!-- Thème -->
+    <h2 style="margin-top: 0;">🎨 Thème</h2>
+
+    <label>Mode :</label>
+    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+        <button onclick="setMode('light')" id="btn-light" class="mode-btn active">☀️ Clair</button>
+        <button onclick="setMode('dark')" id="btn-dark" class="mode-btn">🌙 Sombre</button>
+    </div>
+
+    <label>Couleur principale :</label>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+        {% for couleur, nom in [
+            ('#2c5f8a', 'Bleu marine'),
+            ('#1565c0', 'Bleu roi'),
+            ('#00796b', 'Vert sapin'),
+            ('#2e7d32', 'Vert foncé'),
+            ('#6a1b9a', 'Violet'),
+            ('#ad1457', 'Rose foncé'),
+            ('#c62828', 'Rouge'),
+            ('#e65100', 'Orange'),
+            ('#4e342e', 'Marron'),
+            ('#37474f', 'Gris ardoise')
+        ] %}
+        <div onclick="setCouleur('{{ couleur }}')"
+             title="{{ nom }}"
+             style="width: 35px; height: 35px; border-radius: 50%; background: {{ couleur }}; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s;"
+             class="couleur-btn"
+             data-couleur="{{ couleur }}">
+        </div>
+        {% endfor %}
+    </div>
+
+    <p style="color: var(--text-light); font-size: 0.9rem;">✅ Les préférences sont sauvegardées automatiquement</p>
+
+</div>
+
+<style>
+.mode-btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.mode-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+</style>
+
+<script>
+// Charger les préférences sauvegardées
+window.onload = function() {
+    document.getElementById('prenom').value = localStorage.getItem('prenom') || '';
+    document.getElementById('nom').value = localStorage.getItem('nom') || '';
+
+    var pdpData = localStorage.getItem('pdp');
+    if (pdpData) {
+        document.getElementById('pdp-emoji').style.display = 'none';
+        document.getElementById('pdp-img').style.display = 'block';
+        document.getElementById('pdp-img').src = pdpData;
+    }
+
+    var couleur = localStorage.getItem('couleurTheme');
+    if (couleur) {
+        document.querySelectorAll('.couleur-btn').forEach(btn => {
+            btn.style.border = btn.dataset.couleur === couleur ? '3px solid black' : '3px solid transparent';
+        });
+    }
+
+    var mode = localStorage.getItem('theme') || 'light';
+    document.getElementById('btn-light').classList.toggle('active', mode === 'light');
+    document.getElementById('btn-dark').classList.toggle('active', mode === 'dark');
+}
+
+function sauvegarder() {
+    localStorage.setItem('prenom', document.getElementById('prenom').value);
+    localStorage.setItem('nom', document.getElementById('nom').value);
+}
+
+function changerPdp(input) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        localStorage.setItem('pdp', e.target.result);
+        document.getElementById('pdp-emoji').style.display = 'none';
+        document.getElementById('pdp-img').style.display = 'block';
+        document.getElementById('pdp-img').src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+}
+
+function setMode(mode) {
+    localStorage.setItem('theme', mode);
+    document.documentElement.setAttribute('data-theme', mode);
+    document.getElementById('btn-light').classList.toggle('active', mode === 'light');
+    document.getElementById('btn-dark').classList.toggle('active', mode === 'dark');
+}
+
+function setCouleur(couleur) {
+    localStorage.setItem('couleurTheme', couleur);
+    document.documentElement.style.setProperty('--primary', couleur);
+    document.querySelectorAll('.couleur-btn').forEach(btn => {
+        btn.style.border = btn.dataset.couleur === couleur ? '3px solid black' : '3px solid transparent';
+        btn.style.transform = btn.dataset.couleur === couleur ? 'scale(1.2)' : 'scale(1)';
+    });
+}
+</script>
+
+{% endblock %}
