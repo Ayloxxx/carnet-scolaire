@@ -87,6 +87,17 @@
         localStorage.setItem('theme', newTheme);
         document.getElementById('theme-btn').textContent = isDark ? '🌙 Mode sombre' : '☀️ Mode clair';
     }
+    function toggleForm() {
+    var form = document.getElementById('form-container');
+    var btn = document.getElementById('btn-ajouter');
+    if (form.classList.contains('visible')) {
+        form.classList.remove('visible');
+        btn.textContent = '+ Ajouter';
+    } else {
+        form.classList.add('visible');
+        btn.textContent = '✕ Fermer';
+    }
+}
 </script>
 
 </body>
