@@ -28,7 +28,8 @@
         {% endif %}
     {% endfor %}
 {% endmacro %}
-
+<div class="table-wrapper">
+    <table>
 <!-- Emploi du temps Semaine A -->
 <div id="semaine-A">
     <h2>Emploi du temps - Semaine A {% if semaine_actuelle == 'A' %}⬅️ Semaine actuelle{% endif %}</h2>
@@ -64,7 +65,10 @@
         {% endfor %}
     </table>
 </div>
-
+</table>
+</div>
+<div class="table-wrapper">
+    <table>
 <!-- Emploi du temps Semaine B -->
 <div id="semaine-B" style="display:none">
     <h2>Emploi du temps - Semaine B {% if semaine_actuelle == 'B' %}⬅️ Semaine actuelle{% endif %}</h2>
@@ -102,7 +106,11 @@
 </div>
 
 <hr>
+<div class="table-wrapper">
+    <table>
 
+<button class="btn-ajouter" id="btn-ajouter" onclick="toggleForm()">+ Ajouter</button>
+        <div class="form-container" id="form-container">
 <!-- Formulaire pour ajouter un cours -->
 <h2>Ajouter un cours</h2>
 <form method="post">
@@ -158,7 +166,7 @@
 
     <button type="submit">Ajouter</button>
 </form>
-
+</div>
 <hr>
 <script>
     afficherSemaine('{{ semaine_actuelle }}');
