@@ -52,7 +52,8 @@
     <p style="color: var(--text-light);">Aucun commentaire pour l'instant.</p>
 {% endif %}
 
-
+<button class="btn-ajouter" id="btn-ajouter" onclick="toggleForm()">+ Ajouter</button>
+<div class="form-container" id="form-container">
 <h2>Ajouter un commentaire</h2>
 <form method="post">
     <label>Matière :</label>
@@ -80,6 +81,7 @@
 
     <button type="submit">Ajouter</button>
 </form>
+    </div>
 
 <hr>
 
