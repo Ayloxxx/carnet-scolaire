@@ -103,7 +103,8 @@ window.onload = function() {
     var nom = localStorage.getItem('nom') || '';
     var nomComplet = (prenom + ' ' + nom).trim();
     if (nomComplet) {
-        document.getElementById('accueil-titre').textContent = 'Bonjour, ' + prenom + ' 👋';
+        dvar affichage = prenom || '{{ session.get("user", "") }}';
+document.getElementById('accueil-titre').textContent = 'Bonjour, ' + affichage + ' 👋';
     }
 
     var pdp = localStorage.getItem('pdp');
