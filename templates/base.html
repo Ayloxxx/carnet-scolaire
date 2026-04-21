@@ -53,10 +53,8 @@
         if (btn) btn.textContent = theme === 'dark' ? '☀️ Mode clair' : '🌙 Mode sombre';
 
         // Profil dans le menu
-        var prenom = localStorage.getItem('prenom') || '';
-        var nom = localStorage.getItem('nom') || '';
-        var nomComplet = (prenom + ' ' + nom).trim();
-        if (nomComplet) document.getElementById('menu-nom').textContent = nomComplet;
+        var nomAffiche = localStorage.getItem('prenom') || '{{ session.get("user", "Mon Carnet") }}';
+document.getElementById('menu-nom').textContent = nomAffiche;
 
         var pdp = localStorage.getItem('pdp');
         if (pdp) {
